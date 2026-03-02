@@ -9,6 +9,7 @@ export const getCoordinatesFromCity = async (city) => {
     );
     const data = await response.json();
     return data;
+
   } catch (error) {
     console.error('Geocoding error:', error);
     throw error;
@@ -23,6 +24,7 @@ export const getCurrentWeather = async (lat, lon) => {
     );
     const data = await response.json();
     return data;
+
   } catch (error) {
     console.error('Weather API error:', error);
     throw error;
@@ -36,9 +38,24 @@ export const getForecast = async (lat, lon) => {
     );
     const data = await response.json();
     return data;
+
   } catch (error) {
     console.error('Forecast API error:', error);
     throw error;
+  }
+};
+
+export const getAirQuality = async (lat, lon) => {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`
+    );
+    const data = await response.json();
+    return data;
+
+  } catch (error) {
+    console.error('Air quality error:', error);
+    return null; 
   }
 };
 
@@ -54,11 +71,14 @@ export const getWeatherDataForCity = async (city) => {
     const weatherData = await getCurrentWeather(lat, lon);
 
     const forecastData = await getForecast(lat, lon);
+
+    const airQualityData = await getAirQuality(lat, lon);
     
     return {
       location: { name, country, lat, lon },
       current: weatherData,
-      forecast: forecastData
+      forecast: forecastData,
+      airQuality:airQualityData
     };
   } catch (error) {
     console.error('Error fetching weather data:', error);

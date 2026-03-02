@@ -8,7 +8,7 @@ import {
 const WeatherDetails = ({ data }) => {
   if (!data) return null;
 
-  const { current, location } = data;
+  const { current, location, airQuality } = data;
   const weatherMain = current.weather[0].main;
   const iconCode = current.weather[0].icon;
   
@@ -22,6 +22,17 @@ const WeatherDetails = ({ data }) => {
     hour: '2-digit',
     minute: '2-digit'
   });
+
+  // Air Quality
+  const getAirQualityLabel = (aqi) => {
+    const levels = ['Good', 'Fair', 'Moderate', 'Poor', 'Very Poor'];
+    const colors = ['text-green-400', 'text-yellow-400', 'text-orange-400', 'text-red-400', 'text-purple-400'];
+
+    return {
+      label: levels[aqi - 1] || 'Unknown',
+      color: colors[aqi - 1] || 'text-gray-400'
+    };
+  };
 
   return (
     <div className="bg-white/20 backdrop-blur-xl rounded-2xl p-6 text-white">
@@ -69,6 +80,20 @@ const WeatherDetails = ({ data }) => {
           <p className="text-lg font-bold">{current.main.pressure} hPa</p>
         </div>
       </div>
+
+      {airQuality && airQuality.list && (
+        <div className="mb-6 bg-white/10 rounded-xl p-4">
+          <p className="text-sm text-white/70 mb-2">Air Quality Index</p>
+          <div className="flex items-center justify-between">
+            <span className={`text-xl font-bold ${getAirQualityLabel(airQuality.list[0].main.aqi).color}`}>
+              {getAirQualityLabel(airQuality.list[0].main.aqi).label}
+            </span>
+            <span className="text-white/50 text-sm">
+              PM2.5: {Math.round(airQuality.list[0].components.pm2_5)} µg/m³
+            </span>
+          </div>
+        </div>
+      )}
 
 
       <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/20">
