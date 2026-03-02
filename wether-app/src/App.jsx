@@ -2,11 +2,15 @@ import React, { useState } from "react";
 import Search from "./components/Search";
 import WeatherDetails from './components/WeatherDetails';
 import { getWeatherDataForCity } from "./services/weatherApi";
+import Forecast from './components/Forecast';
+
+const API_KEY = '1ca0aa29fc6f8679bcfa62c35662793c';
 
 const App = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [weatherData, setWeatherData] = useState(null);
+  
 
   const handleSearch = async (city) => {
     try {
@@ -17,7 +21,7 @@ const App = () => {
       const data = await getWeatherDataForCity(city);
 
       setWeatherData(data);
-      console.log("Weather data received:", data);
+      // console.log("Weather data received:", data);
     } catch (err) {
       setError(err.message || "Failed to fetch weather data");
     } finally {
@@ -45,6 +49,7 @@ const App = () => {
           <div className="mt-8">
 
             <WeatherDetails data={weatherData} />
+            <Forecast forecastData={weatherData.forecast} />
           </div>
         )}
       </div>
