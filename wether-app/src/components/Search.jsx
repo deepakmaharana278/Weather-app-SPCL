@@ -1,17 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Search = ({ onSearch, loading }) => {
   const [city, setCity] = useState('');
+  const [recentSearches, setRecentSearches] = useState([]);
+
+   useEffect(() => {
+    const saved = localStorage.getItem('recentSearches');
+    if (saved) {
+      setRecentSearches(JSON.parse(saved));
+    }
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (city.trim()) {
       onSearch(city);
+
+      // Save to recent searches
+      const updated = [city, ...recentSearches.filter(c => c !== city)].slice(0, 5);
+      setRecentSearches(updated);
+      localStorage.setItem('recentSearches', JSON.stringify(updated));
+
       setCity('');
     }
   };
 
+  const handleRecentClick = (recentCity) => {
+    onSearch(recentCity);
+  };
+
   return (
+    <div className="w-full max-w-2xl mx-auto">
     <form onSubmit={handleSubmit} className="w-full max-w-md mx-auto">
       <div className="flex gap-2">
         <input
@@ -31,6 +50,23 @@ const Search = ({ onSearch, loading }) => {
         </button>
       </div>
     </form>
+
+    {recentSearches.length > 0 && (
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <span className="text-sm text-white/70">Recent:</span>
+          {recentSearches.map((recent, index) => (
+            <button
+              key={index}
+              onClick={() => handleRecentClick(recent)}
+              className="px-3 py-1 bg-white/20 hover:bg-white/30 rounded-full text-white text-sm transition"
+              disabled={loading}
+            >
+              {recent}
+            </button>
+          ))}
+        </div>
+      )}
+      </div>
   );
 };
 
