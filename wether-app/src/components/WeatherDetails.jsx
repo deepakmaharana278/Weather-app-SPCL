@@ -26,7 +26,7 @@ const WeatherDetails = ({ data }) => {
   // Air Quality
   const getAirQualityLabel = (aqi) => {
     const levels = ['Good', 'Fair', 'Moderate', 'Poor', 'Very Poor'];
-    const colors = ['text-green-400', 'text-yellow-400', 'text-orange-400', 'text-red-400', 'text-purple-400'];
+    const colors = ['text-green-400', 'text-yellow-400', 'text-orange-400', 'text-red-400', 'text-purple-500'];
 
     return {
       label: levels[aqi - 1] || 'Unknown',

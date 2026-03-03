@@ -1,15 +1,19 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Search from "./components/Search";
 import WeatherDetails from "./components/WeatherDetails";
 import { getWeatherDataForCity } from "./services/weatherApi";
 import Forecast from "./components/Forecast";
+import LocationButton from './components/LocationButton';
 
-const API_KEY = "1ca0aa29fc6f8679bcfa62c35662793c";
 
 const App = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [weatherData, setWeatherData] = useState(null);
+
+  useEffect(() => {
+    handleSearch('Bhubaneswar');
+  }, []);
 
   const handleSearch = async (city) => {
     try {
@@ -40,15 +44,19 @@ const App = () => {
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-500 to-purple-600 p-4">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-white text-center mb-8">Weather App</h1>
+        <h1 className="text-4xl font-bold text-white text-center mb-4">Weather App</h1>
         <p className="text-white/80 text-center mb-8">
-          Search for any city to get current weather and 5-day forecast
+          Real-time weather & 5-day forecast for any city
         </p>
 
         <Search onSearch={handleSearch} loading={loading} />
+        <div className="mt-5 flex justify-center">
+          <LocationButton onLocationDetected={handleSearch} />
+        </div>
+        
 
         {loading && (
-          <div className="text-center text-white mt-12">
+          <div className="text-center text-white mt-6">
             <div className="relative inline-block">
               <div className="w-16 h-16 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
               <div className="absolute inset-0 flex items-center justify-center">
@@ -74,7 +82,7 @@ const App = () => {
         )}
 
         {weatherData && !loading && (
-          <div className="mt-8">
+          <div className="mt-5">
             <WeatherDetails data={weatherData} />
             <Forecast forecastData={weatherData.forecast} />
           </div>
